@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - JG Odontologia</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">JG ODONTOLOGIA</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="section">
+        <div class="form-container">
+            <div class="auth-form">
+<h2>Faça seu Login</h2>
+                <p style="text-align: center; color: #6c757d; margin-bottom: 2rem;">Acesse sua área para agendar consultas</p>
+                
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="login-email">Email</label>
+                        <input type="email" id="login-email" required placeholder="seu@email.com">
+                    </div>
+                    <button type="submit" class="submit-btn">Entrar</button>
+                </form>
+
+                <p style="text-align: center; margin-top: 1.5rem; color: #6c757d;">
+                    Não tem conta? <a href="register.html" style="color: #17a2b8; text-decoration: none; font-weight: 500;">Crie sua conta grátis</a>
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('login-form');
+            
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const email = document.getElementById('login-email').value.trim();
+                if (email) {
+                    fetch('api/login.php', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({email})
+                    })
+                    .then(response => response.text())
+                    .then(text => {
+                        console.log('Login response:', text);
+                        const data = JSON.parse(text);
+                        if (data.success) {
+                            sessionStorage.setItem('user', JSON.stringify(data.user));
+                            window.location.href = 'dashboard.html';
+                        } else {
+                            alert(data.error || 'Erro no login');
+                        }
+                    })
+                    .catch(err => alert('Erro: ' + err));
+                } else {
+                    alert('Insira seu email');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
